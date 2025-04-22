@@ -29,8 +29,20 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
         tate = False
     return yoko, tate
 
-
-
+def game_over():
+    """ ゲームオーバー時の処理 """
+    font = pg.font.Font(None, 80)
+    text = font.render("GAME OVER", True, (255, 255, 255)) # Game Overの文字
+    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    overlay = pg.Surface((WIDTH, HEIGHT))
+    overlay.set_alpha(128)  # 半透明
+    overlay.fill((0, 0, 0))
+    screen = pg.display.get_surface()
+    screen.blit(overlay, (0, 0))
+    screen.blit(text, text_rect)
+    pg.display.update()
+    pg.time.wait(5000)  # 5秒間停止
+    return
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -59,7 +71,7 @@ def main():
 
         # こうかとんRectと爆弾Rectが重なっていたら
         if kk_rct.colliderect(bb_rct): 
-            print("Game Over")
+            game_over()
             return
 
         key_lst = pg.key.get_pressed()
@@ -69,14 +81,7 @@ def main():
             if key_lst[key]:
                 sum_mv[0] += mv[0]  # 左右方向
                 sum_mv[1] += mv[1]  # 上下方向
-        # if key_lst[pg.K_UP]:
-        #     sum_mv[1] -= 5
-        # if key_lst[pg.K_DOWN]:
-        #     sum_mv[1] += 5
-        # if key_lst[pg.K_LEFT]:
-        #     sum_mv[0] -= 5
-        # if key_lst[pg.K_RIGHT]:
-        #     sum_mv[0] += 5
+
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True): # 画面外だったら
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1]) # 画面内に戻す
