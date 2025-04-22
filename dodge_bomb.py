@@ -29,7 +29,7 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
         tate = False
     return yoko, tate
 
-def game_over():
+def game_over(screen: pg.Surface) -> None:
     """    
     ゲームオーバー時に、半透明の黒い画面上に「Game Over」と表示し、泣いているこうかとん画像を貼り付ける関数 
     """
@@ -45,7 +45,6 @@ def game_over():
     overlay.set_alpha(128)  # 半透明
     overlay.fill((0, 0, 0)) # 黒色で塗りつぶす
 
-    screen = pg.display.get_surface()
     screen.blit(overlay, (0, 0))    # 画面をブラックアウト
     screen.blit(text, text_rect)    # Game Overの文字を描画
     screen.blit(cry_kk_img, left_kk_rect)   # 左側のこうかとん
@@ -55,7 +54,7 @@ def game_over():
     pg.time.wait(5000)  # 5秒間停止
     return
 
-def init_bb_imgs():
+def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
     """ 
     サイズの異なる爆弾Surfaceを要素としたリストと加速度リストを返す
     """
@@ -94,7 +93,7 @@ def main():
 
         # こうかとんRectと爆弾Rectが重なっていたら
         if kk_rct.colliderect(bb_rct): 
-            game_over()
+            game_over(pg.display.get_surface()) # ゲームオーバー
             return
 
         key_lst = pg.key.get_pressed()
