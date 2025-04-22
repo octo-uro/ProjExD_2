@@ -30,19 +30,42 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     return yoko, tate
 
 def game_over():
-    """ ゲームオーバー時の処理 """
+    """    
+    ゲームオーバー時に、半透明の黒い画面上に「Game Over」と表示し、泣いているこうかとん画像を貼り付ける関数 
+    """
     font = pg.font.Font(None, 80)
     text = font.render("GAME OVER", True, (255, 255, 255)) # Game Overの文字
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-    overlay = pg.Surface((WIDTH, HEIGHT))
+    
+    cry_kk_img = pg.image.load("fig/8.png") # 泣いているこうかとん
+    left_kk_rect = cry_kk_img.get_rect(center=(WIDTH // 2 - 200, HEIGHT // 2))
+    right_kk_rect = cry_kk_img.get_rect(center=(WIDTH // 2 + 200, HEIGHT // 2))
+   
+    overlay = pg.Surface((WIDTH, HEIGHT)) # ブラックアウト画面
     overlay.set_alpha(128)  # 半透明
-    overlay.fill((0, 0, 0))
+    overlay.fill((0, 0, 0)) # 黒色で塗りつぶす
+
     screen = pg.display.get_surface()
-    screen.blit(overlay, (0, 0))
-    screen.blit(text, text_rect)
+    screen.blit(overlay, (0, 0))    # 画面をブラックアウト
+    screen.blit(text, text_rect)    # Game Overの文字を描画
+    screen.blit(cry_kk_img, left_kk_rect)   # 左側のこうかとん
+    screen.blit(cry_kk_img, right_kk_rect)  # 右側のこうかとん
+
     pg.display.update()
     pg.time.wait(5000)  # 5秒間停止
     return
+
+def init_bb_imgs():
+    """ 
+    サイズの異なる爆弾Surfaceを要素としたリストと加速度リストを返す
+    """
+    bb_imgs = []  # 爆弾Surfaceのリスト
+    bb_accs = [a for a in range(1, 11)]  # 加速度リスト
+    for r in range(1, 11):
+        bb_img = pg.Surface((20 * r, 20 * r))  # 爆弾Surface
+        pg.draw.circle(bb_img, (255, 0, 0), (10 * r, 10 * r), 10 * r)  # 赤い円を描画
+        bb_imgs.append(bb_img)  # リストに追加
+    return bb_imgs, bb_accs
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
